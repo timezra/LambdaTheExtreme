@@ -31,7 +31,7 @@ class Dropbox(clientIdentifier: String, accessToken: String) {
   def addAuthorization = addHeader("Authorization", s"Bearer ${accessToken}")
 
   import scala.concurrent.duration.DurationInt
-  def accountInfo(conduit: ActorRef = IO(Http))(implicit timeout: Timeout = 60 seconds): Future[AccountInfo] = {
+  def accountInfo(conduit: ActorRef = IO(Http))(implicit timeout: Timeout = 60 seconds, locale: Option[Locale] = None): Future[AccountInfo] = {
     import AccountInfoJsonProtocol.accountInfoFormat
     import SprayJsonSupport.sprayJsonUnmarshaller
 
@@ -41,8 +41,9 @@ class Dropbox(clientIdentifier: String, accessToken: String) {
       sendReceive(conduit) ~>
       unmarshal[AccountInfo]
     )
+    val q = Seq(locale map ("locale" -> _.toLanguageTag)) flatMap (f ⇒ f)
     pipeline {
-      Get(Uri("https://api.dropbox.com/1/account/info"))
+      Get(Uri("https://api.dropbox.com/1/account/info") withQuery (q: _*))
     }
   }
   
