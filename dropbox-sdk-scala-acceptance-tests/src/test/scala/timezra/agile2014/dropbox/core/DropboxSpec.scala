@@ -11,6 +11,7 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.ConfigMap
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
+import java.io.File
 
 @RunWith(classOf[JUnitRunner])
 class DropboxSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndAfterAll with Matchers {
@@ -37,6 +38,20 @@ class DropboxSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndAfter
       accountInfo.uid should be > 0L
       accountInfo.display_name should not be (empty)
       accountInfo.quota_info should not be (null)
+    }
+  }
+
+  feature("Files and metadata") {
+    scenario("Puts a file") {
+      Given("A file")
+      val file: File = new File("src/test/resources/application.conf")
+
+      When("A user puts it in Dropbox")
+      import Implicits._
+      Await result (dropbox putFile (path = file.getName, contents = file, length = file.length().intValue()), 5 seconds)
+
+      Then("That file should be in Dropbox")
+      pending // we still have no way of getting at the file to verify that the put worked
     }
   }
 }

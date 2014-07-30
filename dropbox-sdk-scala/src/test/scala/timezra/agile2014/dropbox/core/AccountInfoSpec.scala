@@ -58,6 +58,10 @@ class AccountInfoSpec(_system: ActorSystem) extends TestKit(_system) with FunSpe
       "email": "${Info.email}"
   }
   """
+      
+  val AuthorizationFailure = s"""
+    {"error": "The given OAuth 2 access token doesn't exist or has expired."}
+  """
 
   override def afterAll {
     TestKit shutdownActorSystem system
@@ -72,7 +76,7 @@ class AccountInfoSpec(_system: ActorSystem) extends TestKit(_system) with FunSpe
       val expectedURI = "https://api.dropbox.com/1/account/info"
       probe expectMsg HttpRequest(uri = expectedURI, headers = List(authorizationHeader, userAgentHeader))
     }
-    
+
     it("should parse account info") {
       val probe = ioProbe
 
@@ -94,7 +98,7 @@ class AccountInfoSpec(_system: ActorSystem) extends TestKit(_system) with FunSpe
 
       intercept[UnsuccessfulResponseException] { await(response) }
     }
-    
+
     it("should request language specific text") {
       val probe = ioProbe
 
@@ -107,11 +111,7 @@ class AccountInfoSpec(_system: ActorSystem) extends TestKit(_system) with FunSpe
     }
 
   }
-  
-import scala.concurrent.duration.DurationInt
+
+  import scala.concurrent.duration.DurationInt
   def await[T](h: Future[T]): T = Await result (h, 1 second)
-  
-  val AuthorizationFailure = s"""
-    {"error": "The given OAuth 2 access token doesn't exist or has expired."}
-  """
 }
