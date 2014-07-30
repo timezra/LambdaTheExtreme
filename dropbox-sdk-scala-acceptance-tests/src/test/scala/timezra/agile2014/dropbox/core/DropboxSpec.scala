@@ -6,9 +6,10 @@ import org.scalatest.FeatureSpec
 import org.scalatest.GivenWhenThen
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.Matchers
+import org.scalatest.FeatureSpecLike
 
 @RunWith(classOf[JUnitRunner])
-class DropboxSpec extends FeatureSpec with GivenWhenThen with BeforeAndAfterAll with Matchers {
+class DropboxSpec extends FeatureSpecLike with GivenWhenThen with BeforeAndAfterAll with Matchers {
 
   lazy val dropbox: Dropbox = Dropbox()
 
