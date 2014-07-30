@@ -32,8 +32,8 @@ class UploaderSpec extends FlatSpecLike with Matchers with BeforeAndAfterAll {
     }
     val uploader = new Uploader(stub)
 
-    uploader putDirectory (new File("src/test/resources"), "/")
+    uploader putDirectory (new File("src/test/resources"), "/", 100)
     
-    howManyTimes shouldBe (4)
+    howManyTimes shouldBe (100)
   }
 }
